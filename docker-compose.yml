@@ -11,6 +11,29 @@ services:
     volumes:
       - mongo_data:/data/db  # <--- ¡Aquí salvamos los datos!
 
+  inventory-db:
+    image: mysql:8
+    container_name: inventory-db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: inventory-db
+    volumes:
+      - inventory_data:/var/lib/mysql
+
+  order-db:
+    image: postgres:16-alpine
+    container_name: order-db
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: order-db
+    volumes:
+      - order_data:/var/lib/postgresql/data
+
 #  # 2. Nuestra Aplicación (Product Service)
 #  product-service:
 #    build: product-service              # Usa el Dockerfile de la carpeta actual
@@ -26,3 +49,5 @@ services:
 
 volumes:
   mongo_data:             # Declaramos el volumen persistente
+  inventory_data:
+  order_data:

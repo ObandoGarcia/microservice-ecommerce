@@ -1,0 +1,23 @@
+package com.ecomerce_app.inventory_service.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "inventories")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class Inventory {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String sku;
+    private Integer quantity;
+}

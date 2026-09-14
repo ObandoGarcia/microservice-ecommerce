@@ -1,0 +1,61 @@
+package com.ecomerce_app.inventory_service.controller;
+
+import com.ecomerce_app.inventory_service.dto.InventoryRequest;
+import com.ecomerce_app.inventory_service.dto.InventoryResponse;
+import com.ecomerce_app.inventory_service.service.InventoryService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1/inventory")
+public class InventoryController {
+
+    private final InventoryService inventoryService;
+
+    public InventoryController(InventoryService inventoryService) {
+        this.inventoryService = inventoryService;
+    }
+
+    @GetMapping("/{sku}")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean isInStock(@PathVariable String sku,
+                             @RequestParam Integer quantity) {
+        return inventoryService.isInStock(sku, quantity);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public InventoryResponse createInventory(@Valid @RequestBody InventoryRequest inventoryRequest){
+        return inventoryService.createInventory(inventoryRequest);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<InventoryResponse> getAllInventory(){
+        return inventoryService.getAllInventory();
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public InventoryResponse updateInventory(@PathVariable Long id,
+                                             @Valid @RequestBody InventoryRequest inventoryRequest){
+        return inventoryService.updateInventory(id, inventoryRequest);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteInventory(@PathVariable Long id){
+        inventoryService.deleteInventory(id);
+    }
+
+    @PutMapping("/reduce/{sku}")
+    @ResponseStatus(HttpStatus.OK)
+    public String reduceStock(@PathVariable String sku, @RequestParam Integer quantity){
+        inventoryService.reduceStock(sku, quantity);
+
+        return "Stock reduced correctly for: " + sku;
+    }
+}
