@@ -7,6 +7,7 @@ import com.ecomerce_app.order_service.mapper.OrderMapper;
 import com.ecomerce_app.order_service.model.Order;
 import com.ecomerce_app.order_service.repository.OrderRepository;
 import com.ecomerce_app.order_service.service.OrderService;
+import com.ecomerce_app.order_service.service.client.InventoryClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,14 +22,15 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-    private final WebClient.Builder webClientBuilder;
+    //private final WebClient.Builder webClientBuilder;
+    private final InventoryClient inventoryClient;
 
     public OrderServiceImpl(OrderRepository orderRepository,
                             OrderMapper orderMapper,
-                            WebClient.Builder webClientBuilder) {
+                            InventoryClient inventoryClient) {
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
-        this.webClientBuilder = webClientBuilder;
+        this.inventoryClient = inventoryClient;
     }
 
     @Override
@@ -41,12 +43,14 @@ public class OrderServiceImpl implements OrderService {
             Integer quantity = item.getQuantity();
 
             try {
-                 webClientBuilder.build().put()
+                 /*webClientBuilder.build().put()
                         .uri("http://localhost:8081/api/v1/inventory/reduce/" + sku,
                                 uriBuilder -> uriBuilder.queryParam("quantity", quantity).build())
                         .retrieve()
                         .bodyToMono(String.class)
-                        .block();
+                        .block();*/
+
+                inventoryClient.reduceStock(sku, quantity);
 
             } catch (Exception e){
                 log.error("Error when trying to reduce stock for sku {} : {}", sku, e.getMessage());
